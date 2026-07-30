@@ -22,6 +22,25 @@ fn main() -> eframe::Result {
         options,
         Box::new(|cc| {
             cc.egui_ctx.set_visuals(app_visuals());
+            let mut style = (*cc.egui_ctx.style_of(egui::Theme::Dark)).clone();
+            {
+                for font in style.text_styles.values_mut() {
+                    font.size *= 3.0;
+                }
+                style.spacing.interact_size = egui::vec2(
+                    style.spacing.interact_size.x * 2.0,
+                    style.spacing.interact_size.y * 2.0,
+                );
+                style.spacing.item_spacing = egui::vec2(
+                    style.spacing.item_spacing.x * 1.5,
+                    style.spacing.item_spacing.y * 1.5,
+                );
+                style.spacing.button_padding = egui::vec2(
+                    style.spacing.button_padding.x * 1.8,
+                    style.spacing.button_padding.y * 1.8,
+                );
+            }
+            cc.egui_ctx.set_style_of(egui::Theme::Dark, style);
             Ok(Box::new(ImageConverterApp::default()))
         }),
     )
@@ -33,6 +52,16 @@ fn app_visuals() -> egui::Visuals {
     let accent = Color32::from_rgb(56, 189, 248);
     v.hyperlink_color = accent;
     v.selection.bg_fill = Color32::from_rgba_premultiplied(56, 189, 248, 60);
+    v.override_text_color = Some(Color32::from_rgb(245, 245, 252));
+    v.widgets.noninteractive.fg_stroke.color = Color32::from_rgb(235, 235, 245);
+    let corner_radius = egui::CornerRadius::same(14);
+    v.widgets.noninteractive.corner_radius = corner_radius;
+    v.widgets.inactive.corner_radius = corner_radius;
+    v.widgets.hovered.corner_radius = corner_radius;
+    v.widgets.active.corner_radius = corner_radius;
+    v.widgets.open.corner_radius = corner_radius;
+    v.menu_corner_radius = egui::CornerRadius::same(16);
+    v.window_corner_radius = egui::CornerRadius::same(20);
     v
 }
 
@@ -131,7 +160,7 @@ impl ConversionStatus {
 
     fn color(&self) -> Color32 {
         match self {
-            Self::Pending => Color32::from_rgb(160, 160, 165),
+            Self::Pending => Color32::from_rgb(215, 215, 225),
             Self::Converting => Color32::from_rgb(80, 160, 240),
             Self::Done => Color32::from_rgb(72, 199, 116),
             Self::Error(_) => Color32::from_rgb(230, 90, 90),
@@ -440,7 +469,7 @@ impl ImageConverterApp {
                 "Batch-convert images between PNG, JPEG, WebP, TIFF, BMP and GIF. \
                  Drag & drop files or use the buttons below.",
             )
-            .color(Color32::from_rgb(145, 145, 160))
+            .color(Color32::from_rgb(220, 220, 235))
             .small(),
         );
     }
@@ -466,7 +495,7 @@ impl ImageConverterApp {
 
                 ui.label(
                     RichText::new(self.target_format.description())
-                        .color(Color32::from_rgb(130, 130, 150))
+                        .color(Color32::from_rgb(210, 210, 228))
                         .small(),
                 );
 
@@ -631,7 +660,7 @@ impl ImageConverterApp {
                         done + errors
                     ))
                     .small()
-                    .color(Color32::from_rgb(130, 130, 155)),
+                    .color(Color32::from_rgb(210, 210, 228)),
                 );
             }
             ui.add_space(4.0);
@@ -649,12 +678,12 @@ impl ImageConverterApp {
                         ui.label(
                             RichText::new("📂  Drop image files here")
                                 .size(20.0)
-                                .color(Color32::from_rgb(130, 130, 150)),
+                                .color(Color32::from_rgb(215, 215, 230)),
                         );
                         ui.add_space(6.0);
                         ui.label(
                             RichText::new("PNG  ·  JPEG  ·  WebP  ·  GIF  ·  BMP  ·  TIFF")
-                                .color(Color32::from_rgb(95, 95, 115)),
+                                .color(Color32::from_rgb(185, 185, 205)),
                         );
                         ui.add_space(12.0);
                         if ui.button("➕  Add files…").clicked() {
@@ -698,7 +727,7 @@ impl ImageConverterApp {
 
                                 ui.label(
                                     RichText::new(entry.display_size())
-                                        .color(Color32::from_rgb(130, 130, 155)),
+                                        .color(Color32::from_rgb(205, 205, 225)),
                                 );
 
                                 let status_label = ui.colored_label(
@@ -743,7 +772,7 @@ impl ImageConverterApp {
             } else {
                 &self.status_message
             };
-            ui.label(RichText::new(msg).color(Color32::from_rgb(160, 160, 175)));
+            ui.label(RichText::new(msg).color(Color32::from_rgb(220, 220, 235)));
 
             // "Open output folder" appears after a batch finishes.
             if !self.is_converting {
