@@ -22,7 +22,8 @@ fn main() -> eframe::Result {
         options,
         Box::new(|cc| {
             cc.egui_ctx.set_visuals(app_visuals());
-            cc.egui_ctx.style_mut(|style| {
+            let mut style = (*cc.egui_ctx.style_of(egui::Theme::Dark)).clone();
+            {
                 for font in style.text_styles.values_mut() {
                     font.size *= 3.0;
                 }
@@ -38,7 +39,8 @@ fn main() -> eframe::Result {
                     style.spacing.button_padding.x * 1.8,
                     style.spacing.button_padding.y * 1.8,
                 );
-            });
+            }
+            cc.egui_ctx.set_style_of(egui::Theme::Dark, style);
             Ok(Box::new(ImageConverterApp::default()))
         }),
     )
