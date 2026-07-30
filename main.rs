@@ -1,3 +1,5 @@
+// Source code has moved to src/main.rs (standard Cargo layout).
+// This file is no longer compiled and can be deleted.
 use eframe::egui::{self, Color32, RichText, ScrollArea, Vec2};
 use image::{DynamicImage, ImageFormat};
 use rayon::prelude::*;
